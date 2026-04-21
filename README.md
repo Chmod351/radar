@@ -119,3 +119,6 @@ Desde la raíz del proyecto, ejecutá:
 #   ⚠️ Disclaimer
 
 Este proyecto NO ESTA TERMINADO y se encuentra en constante cambio
+
+Esta herramienta fue creada para la gestión de activos y auditoría de seguridad autorizada. El uso en sistemas sin consentimiento es responsabilidad del usuari
+
