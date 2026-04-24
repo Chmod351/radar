@@ -1,7 +1,8 @@
-import { emptyWhois, normalizeWhois } from "../phases/02-dns/whois";
+import { emptyWhois } from "../phases/02-dns/whois";
 import { normalizedIntel } from "../phases/03-http";
 import type { AnalyzedTarget, HttpIntel } from "../shared/types";
-import { CDN_PROVIDERS, SENSORS } from "../shared/utils";
+import { CDN_PROVIDERS, SENSORS } from "../shared/utils/const";
+import { normalizeWhois } from "./normalizeWhois";
 
 
 export function normalizeHttpIntel(raw:HttpIntel):HttpIntel {

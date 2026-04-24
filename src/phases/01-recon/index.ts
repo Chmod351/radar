@@ -1,4 +1,4 @@
-import { logger } from "../../shared/errorLogger.ts";
+import { logger } from "../../shared/systemLogger.ts";
 import { streamAllSubdomains } from "./subdomainFinder.ts";
 
 export function reconPhase(target:string){

@@ -1,7 +1,8 @@
-import { noise, SENSORS } from "../shared/utils.ts";
 import type { AnalyzedTarget, Technology } from "../shared/types";
 import { calculatePriority } from "../domain/calculatePriority.ts";
 import { calculateStatus, getServerInfo } from "../domain/calculateStatus.ts";
+import { noise } from "../shared/utils/data.ts";
+import { SENSORS } from "../shared/utils/const.ts";
 
 const REAL_TECH_FILTER = (t: Technology) => {
  

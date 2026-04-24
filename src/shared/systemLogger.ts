@@ -1,4 +1,4 @@
-import { LOGGER } from "./utils";
+import { LOGGER } from "./utils/const";
 
 const colors=["\x1b[31m","\x1b[33m","\x1b[36m","\x1b[90m","\x1b[0m"];
 

@@ -1,5 +1,6 @@
 import type { AnalyzedTarget } from "../shared/types";
-import { criticalKeywords, SENSORS } from "../shared/utils";
+import { SENSORS } from "../shared/utils/const";
+import { criticalKeywords } from "../shared/utils/data";
 
 export function scoreImpact(item:AnalyzedTarget) {
   let score = 0;
