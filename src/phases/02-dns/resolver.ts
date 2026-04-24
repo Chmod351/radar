@@ -1,58 +1,15 @@
 import { execa } from "execa";
-import type { AnalyzedTarget, DnsPhase, ResolvedDomain, WebMetadata } from "../../shared/types.ts";
+import type { ResolvedDomain, WebMetadata } from "../../shared/types.ts";
 import { identifyCDN } from "./ansLookup.ts";
 import { SENSORS } from "../../shared/utils/const.ts";
 import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 
 
-export function refineInfraExposure(target: AnalyzedTarget): AnalyzedTarget {
-  const serverHeader = (target.webserver || "").toLowerCase();
-  const openPorts = target.open_ports || [];
-  
-  // 1. SEÑALES DE ORIGIN (Certeza absoluta)
-  // Si Nmap encontró servicios de administración o DB expuestos
-  const hasInfraPorts = openPorts.some(p => 
-    [21, 22, 25, 110, 143,3000, 3306, 5432,5060, 8080, 8443].includes(p.port),
-  );
-
-  // Si el server reporta ser un software crudo sin intermediarios
-  const isRawServer = ["apache", "nginx", "lighttpd", "litespeed"].some(s => 
-    serverHeader.includes(s),
-  );
-
-  // 2. LÓGICA DE ACTUALIZACIÓN
-  let finalInfra = target.infra_type;
-
-  // Si antes era UNKNOWN 
-  if (hasInfraPorts || isRawServer) {
-    finalInfra = SENSORS.INFRA_TYPE.SELF_HOSTED; 
-  } 
-  
-  // Caso especial: Si Nmap no devolvió NADA y no hay headers de server, 
-  // pero el ASN decía Cloud, lo mantenemos como CLOUD.
-  
-  let priority = target.priority;
-  if (openPorts.some(p => [3306, 21, 22,5060,2000].includes(p.port))) {
-    priority = SENSORS.PRIORITY.CRITICAL; 
-  }
-
-  return {
-    ...target,
-    infra_type: finalInfra,
-    priority,
-  };
-}
-
-
-
-
 /**
  * 1. RESOLVER DOMINIO 
  * Recibe UN dominio, devuelve host e ip.
  */
-
-const globalFingerprints= new Set<string>();
 
 export async function resolveSingleDomain(domain: string): Promise<ResolvedDomain | null> {
   try {
@@ -127,46 +84,4 @@ export async function enrichWebData(host: string): Promise<WebMetadata> {
   }
 }
 
-/**
- * 3. CLASIFICADOR DE TARGET 
- *  para decidir qué hacer con el target.
- */
 
-export function classifyTarget(domainData: DnsPhase): Partial<AnalyzedTarget> {
-  const cloudNoise = ["cloudflare", "akamai", "vercel", "fastly", "google-cloud","amazon"];
-  const asnOwner = (domainData.asn_owner || "").toLowerCase();
-  const isNoise = cloudNoise.some(key => asnOwner.includes(key));
-
-  const fingerprint = `${domainData.ip}_${domainData.status_code}_${domainData.title}`;
-
-
-  let action:number = SENSORS.ACTION.SKIP;
-  let priority:number = SENSORS.PRIORITY.LOW; 
-
-  if (globalFingerprints.has(fingerprint)) {
-    return { ...domainData, 
-      infra_type:isNoise?SENSORS.INFRA_TYPE.CLOUD:SENSORS.INFRA_TYPE.UNKNOWN 
-      , action: SENSORS.ACTION.DUPLICATE ,
-      priority,
-    };
-  }
-
-  globalFingerprints.add(fingerprint);
- 
-  if (isNoise) {
-    return { ...domainData, 
-      infra_type:SENSORS.INFRA_TYPE.CLOUD ,
-      priority,
-      action, 
-    };
-  }
-  priority=SENSORS.PRIORITY.HIGH; 
-  action=SENSORS.ACTION.READY;
-
-  return {
-    ...domainData,
-    priority,
-    infra_type: SENSORS.INFRA_TYPE.UNKNOWN,
-    action,
-  };
-}
