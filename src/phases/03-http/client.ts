@@ -200,7 +200,6 @@ async function headersFallback(url:string) :Promise<HttpIntel>{
 
 async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
   const attempts: BypassAttempt[] = [];
-  const jitter = Math.floor(Math.random() * 500);
   // Definimos los headers de bypass que queremos testear
   const bypassPayloads = [
     { name: "Base", header: null },
@@ -217,6 +216,7 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
   ];
 
   for (const payload of bypassPayloads) {
+    const jitter = Math.floor(Math.random() * 500);
     await Bun.sleep(jitter); // añadi latencia artificial a las requests para intentar evitar los WAF
     try {
       // Usamos -w para obtener el HTTP CODE y el SIZE_DOWNLOAD al final del output
