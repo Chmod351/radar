@@ -1,14 +1,14 @@
 import { execa } from "execa";
-import { logger } from "../../shared/errorLogger.ts";
 import type { WhoisIntel } from "../../shared/types.ts";
-import { getErrorMessage } from "../../shared/utils.ts";
+import { logger } from "../../shared/systemLogger.ts";
+import { getErrorMessage } from "../../shared/utils/utils.ts";
+import { normalizeWhois } from "../../parsers/normalizeWhois.ts";
 
 /**
  * CACHÉ GLOBAL DE WHOIS
  */
 const whoisCache = new Map<string, WhoisIntel>();
 
-type WhoisRawData = Record<string, string | string[]>;
 export const emptyWhois: WhoisIntel = {
   registrar: null,
   creationDate: null,
@@ -37,64 +37,6 @@ export function getRootDomain(host: string): string {
     return parts.slice(-2).join(".");
   }
   return parts.slice(-2).join(".");
-}
-
-/**
- * 2. PARSER AGNÓSTICO 
- * 
-* */
-function parseWhoisAgnostic(rawText: string): WhoisRawData {
-  const lines = rawText.split("\n");
-  const json: WhoisRawData = {};
-
-  for (const line of lines) {
-    // Limpieza de comentarios y líneas sin ":"
-    if (line.startsWith("%") || line.startsWith("#") || !line.includes(":")) continue;
-
-    const [rawKey, ...valueParts] = line.split(":");
-    if (!rawKey) continue;
-
-    const key = rawKey.trim().toLowerCase().replace(/\s+/g, "_");
-    const value = valueParts.join(":").trim();
-    if (!value) continue;
-
-    const existing = json[key];
-    if (existing) {
-      // Si ya existe, convertimos a array o agregamos al existente
-      json[key] = Array.isArray(existing) ? [...existing, value] : [existing, value];
-    } else {
-      json[key] = value;
-    }
-  }
-  return json;
-}
-
-/**
- * 3. NORMALIZADOR 
-* */
-export function normalizeWhois(rawText: string): WhoisIntel {
-  const data = parseWhoisAgnostic(rawText);
-
-  const get = (k: string): string | undefined => {
-    const val = data[k];
-    return Array.isArray(val) ? val[0] : val;
-  };
-
-  const getAll = (k: string): string[] => {
-    const val = data[k];
-    if (!val) return [];
-    return Array.isArray(val) ? val : [val];
-  };
-
-  return {
-    registrar: get("registrar") || get("sponsoring_registrar") || null,
-    creationDate: get("creation_date") || get("registered_on") || null,
-    expirationDate: get("registry_expiry_date") || get("expires_on") || null,
-    nameServers: [...new Set([...getAll("nserver"), ...getAll("name_server")])],
-    status: [...new Set([...getAll("domain_status"), ...getAll("status")])],
-    emails: get("registrant_email") || get("abuse_contact_email") || null,
-    raw: rawText.slice(0, 500),
-  };
 }
 
 export async function getWhoisIntel(host: string): Promise<WhoisIntel> {
