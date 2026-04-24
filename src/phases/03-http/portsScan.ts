@@ -37,9 +37,12 @@ function parseNmapOutput(stdout: string): OpenPort[] {
     if (match ) {
       const portNum = parseInt(match[1] || "0", 10);
       const transportStr = (match[2] || "").toLowerCase(); 
-      const serviceRaw = (match[3] || "").toLowerCase();
-      const serviceWithVersion = match[3] ? match[3].trim() : null;
+      const fullServiceString = match[3] ? match[3].trim() : "";
       
+      const shards=fullServiceString ? fullServiceString.split(/\s+/):[]
+      const serviceRaw=shards && shards[0]? shards[0].toLowerCase() : ""
+      const versionInfo=shards.slice(1).join(" ") || null
+
       let transportId: number = PROTOCOLS.TRANSPORT.UNKNOWN;
       if (transportStr === "tcp") transportId = PROTOCOLS.TRANSPORT.TCP;
       if (transportStr === "udp") transportId = PROTOCOLS.TRANSPORT.UDP; 
@@ -56,7 +59,8 @@ function parseNmapOutput(stdout: string): OpenPort[] {
         port:portNum,
         protocol: appId,
         transport:transportId,
-        service:serviceWithVersion,
+         service:serviceRaw,
+         version:versionInfo
       });
     }
   }
@@ -81,7 +85,7 @@ async function scanPorts(target: string): Promise<OpenPort[]> {
      *  --script=banner Solo pide el banner
      *  -oX Output en formato xml
      */
-    const { stdout } = await execa("nmap", ["-F", "--open", "-T2","-n","-sV","--version-intensitity","0","--script-banner","-oX", target], { 
+    const { stdout } = await execa("nmap", ["-F", "--open", "-T3","-n","-sV","--version-intensity","0","--script=banner", target], { 
       timeout: 120000,// 2 minutos de timeout
     });
 
