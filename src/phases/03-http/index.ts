@@ -25,7 +25,7 @@ export const normalizedIntel: HttpIntel={
     status:0,
     size:0,
     timestamp:"",
-  }]
+  }],
 };
 export async function fingerprintingPhase(target: AnalyzedTarget): Promise<AnalyzedTarget> {
   const host = target.host;

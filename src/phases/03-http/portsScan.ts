@@ -56,7 +56,7 @@ function parseNmapOutput(stdout: string): OpenPort[] {
         port:portNum,
         protocol: appId,
         transport:transportId,
-        service:serviceWithVersion
+        service:serviceWithVersion,
       });
     }
   }
@@ -92,7 +92,7 @@ async function scanPorts(target: string): Promise<OpenPort[]> {
     if (discoveredPorts.length > 0) {
       logger.info("NMAP", `Detectados ${discoveredPorts.length} puertos en ${target}`);
     }
-
+    console.log("NMAP stdout: ",stdout);
     return discoveredPorts;
   } catch (e: unknown) {
    

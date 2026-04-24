@@ -205,14 +205,14 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
     { name: "Base", header: null },
     { name: "X-Forwarded-For", header: "X-Forwarded-For: 127.0.0.1" },
     { name: "X-Original-URL", header: "X-Original-URL: /admin" },
-    {name:"X-Forwarded-For-127",header:"X-Originating-IP:  127.0.0.1"},
-    {name:"X-Remote-Ip",header:"X-Remote-IP: 127.0.0.1"},
-    {name:"X-Remote-Addr",header: "X-Remote-Addr: 127.0.0.1"},
-    {name:"X-Client-IP",header:"X-Client-IP: 127.0.0.1"},
-    {name:"X-Host", header: "X-Host: 127.0.0.1"},
-    {name:"X-Forwarded-Host",header : "X-Formwarded-Host: localhost"},
-    {name: "X-Rewrite-URL", header: `X-Rewrite-URL: ${url.endsWith("/") ? url : url + "/"}` 
-}
+    { name:"X-Forwarded-For-127",header:"X-Originating-IP:  127.0.0.1" },
+    { name:"X-Remote-Ip",header:"X-Remote-IP: 127.0.0.1" },
+    { name:"X-Remote-Addr",header: "X-Remote-Addr: 127.0.0.1" },
+    { name:"X-Client-IP",header:"X-Client-IP: 127.0.0.1" },
+    { name:"X-Host", header: "X-Host: 127.0.0.1" },
+    { name:"X-Forwarded-Host",header : "X-Formwarded-Host: localhost" },
+    { name: "X-Rewrite-URL", header: `X-Rewrite-URL: ${url.endsWith("/") ? url : url + "/"}`, 
+    },
   ];
 
   for (const payload of bypassPayloads) {
@@ -248,10 +248,10 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
           timestamp: new Date().toISOString(),
         });
 
-     if (attempts.length > 1 && status !== 0) {
+        if (attempts.length > 1 && status !== 0) {
           const baseSize =attempts && attempts[0]? attempts[0].size:0;
           if (Math.abs(baseSize - s) > 50) { // Umbral de 50 bytes para evitar ruido de headers
-             logger.warn("BYPASS", `Variación detectada en ${payload.name} (${size} bytes) contra ${url}`);
+            logger.warn("BYPASS", `Variación detectada en ${payload.name} (${size} bytes) contra ${url}`);
           }
         }
       }
