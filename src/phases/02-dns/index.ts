@@ -3,8 +3,9 @@ import { getASNInfo, identifyCDN } from "./ansLookup.ts";
 import { getWhoisIntel } from "./whois.ts";
 import { withRetry } from "../../shared/retry.ts";
 import type {  AnalyzedTarget } from "../../shared/types.ts";
-import { logger } from "../../shared/errorLogger.ts";
-import { getErrorMessage, SENSORS } from "../../shared/utils.ts";
+import { SENSORS } from "../../shared/utils/const.ts";
+import { getErrorMessage } from "../../shared/utils/utils.ts";
+import { logger } from "../../shared/systemLogger.ts";
 
 export async function dnsPhaseStream(subdomain: string): Promise<Partial<AnalyzedTarget> | null> {
   try {

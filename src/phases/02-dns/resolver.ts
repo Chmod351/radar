@@ -1,8 +1,10 @@
 import { execa } from "execa";
-import { logger } from "../../shared/errorLogger.ts";
-import { getErrorMessage, SENSORS } from "../../shared/utils.ts";
 import type { AnalyzedTarget, DnsPhase, ResolvedDomain, WebMetadata } from "../../shared/types.ts";
 import { identifyCDN } from "./ansLookup.ts";
+import { SENSORS } from "../../shared/utils/const.ts";
+import { logger } from "../../shared/systemLogger.ts";
+import { getErrorMessage } from "../../shared/utils/utils.ts";
+
 
 export function refineInfraExposure(target: AnalyzedTarget): AnalyzedTarget {
   const serverHeader = (target.webserver || "").toLowerCase();

@@ -1,11 +1,11 @@
 import { resolveTxt } from "node:dns/promises";
-import { logger } from "../../shared/errorLogger.ts";
-import { getErrorMessage } from "../../shared/utils.ts";
 import type {  ASNIntel, DnsPhase } from "../../shared/types.ts";
-import { CDN_PROVIDERS } from "../../shared/utils.ts";
+import { CDN_PROVIDERS } from "../../shared/utils/const.ts";
+import { getErrorMessage } from "../../shared/utils/utils.ts";
+import { logger } from "../../shared/systemLogger.ts";
 
 export function identifyCDN(asn?:DnsPhase,
-  serverHeader?:any,
+  serverHeader?:string,
   headersRaw?:string ) {
 
   let cdn: number = CDN_PROVIDERS.NONE;
@@ -32,6 +32,7 @@ export function identifyCDN(asn?:DnsPhase,
         break;
       }
     }
+    // si no detectamos CDN, pero el CDN O CACHE  viene en el header es CDN
     if (cdn === CDN_PROVIDERS.NONE && (hRaw.includes("cdn") || hRaw.includes("cache"))) {
       cdn = CDN_PROVIDERS.UNKNOWN_CDN;
     }
