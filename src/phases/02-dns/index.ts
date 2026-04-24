@@ -1,4 +1,4 @@
-import { resolveSingleDomain, enrichWebData} from "./resolver.ts";
+import { resolveSingleDomain, enrichWebData } from "./resolver.ts";
 import { getASNInfo, identifyCDN } from "./ansLookup.ts";
 import { getWhoisIntel } from "./whois.ts";
 import { withRetry } from "../../shared/retry.ts";

@@ -14,9 +14,9 @@ export function parseNmapOutput(stdout: string): OpenPort[] {
       const transportStr = (match[2] || "").toLowerCase(); 
       const fullServiceString = match[3] ? match[3].trim() : "";
       
-      const shards=fullServiceString ? fullServiceString.split(/\s+/):[]
-      const serviceRaw=shards && shards[0]? shards[0].toLowerCase() : ""
-      const versionInfo=shards.slice(1).join(" ") || null
+      const shards=fullServiceString ? fullServiceString.split(/\s+/):[];
+      const serviceRaw=shards && shards[0]? shards[0].toLowerCase() : "";
+      const versionInfo=shards.slice(1).join(" ") || null;
 
       let transportId: number = PROTOCOLS.TRANSPORT.UNKNOWN;
       if (transportStr === "tcp") transportId = PROTOCOLS.TRANSPORT.TCP;
@@ -34,8 +34,8 @@ export function parseNmapOutput(stdout: string): OpenPort[] {
         port:portNum,
         protocol: appId,
         transport:transportId,
-         service:serviceRaw,
-         version:versionInfo
+        service:serviceRaw,
+        version:versionInfo,
       });
     }
   }
