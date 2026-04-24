@@ -237,6 +237,8 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
       
       if (stdout) {
         const [statusCode, size] = stdout.split(",");
+        const status =statusCode? parseInt(statusCode) : 0;
+        const s =size? parseInt(size) : 0;
         
         attempts.push({
           method: "GET",
@@ -246,8 +248,11 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
           timestamp: new Date().toISOString(),
         });
 
-        if (attempts.length > 1 && attempts[0] && size && attempts[0].size !== parseInt(size)) {
-          logger.warn("BYPASS-ATTEMPT", `Variacion del Header: ${payload.name} cambió el tamaño a ${size} bytes`);
+     if (attempts.length > 1 && status !== 0) {
+          const baseSize =attempts && attempts[0]? attempts[0].size:0;
+          if (Math.abs(baseSize - s) > 50) { // Umbral de 50 bytes para evitar ruido de headers
+             logger.warn("BYPASS", `Variación detectada en ${payload.name} (${size} bytes) contra ${url}`);
+          }
         }
       }
     } catch (error) {
