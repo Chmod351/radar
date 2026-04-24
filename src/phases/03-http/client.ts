@@ -209,7 +209,7 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
     {name:"X-Remote-Ip",header:"X-Remote-IP: 127.0.0.1"},
     {name:"X-Remote-Addr",header: "X-Remote-Addr: 127.0.0.1"},
     {name:"X-Client-IP",header:"X-Client-IP: 127.0.0.1"},
-    {name:"X-Host",header:"X-Client-IP: 127.0.0.1"},
+    {name:"X-Host", header: "X-Host: 127.0.0.1"},
     {name:"X-Forwarded-Host",header : "X-Formwarded-Host: localhost"},
     {name: "X-Rewrite-URL", header: `X-Rewrite-URL: ${url.endsWith("/") ? url : url + "/"}` 
 }
