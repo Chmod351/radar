@@ -1,7 +1,7 @@
 import { execa } from "execa";
-import { PHASES } from "../../shared/utils.ts";
 import readline from "readline";
-import { logger } from "../../shared/errorLogger.ts";
+import { logger } from "../../shared/systemLogger";
+import { PHASES } from "../../shared/utils/const";
 
 async function* runSubdomainStream(cmd: string, args: string[]): AsyncIterable<string> {
 
