@@ -1,10 +1,11 @@
 import { getWebIntel } from "./client.ts";
 import {  scanPortsSafe } from "./portsScan.ts";
-import { logger } from "../../shared/errorLogger.ts";
 import type { AnalyzedTarget, HttpIntel } from "../../shared/types";
-import { normalizeHttpIntel } from "../../shared/helper.ts";
-import { getErrorMessage, PROTOCOLS } from "../../shared/utils.ts";
 import { identifyCDN } from "../02-dns/ansLookup.ts";
+import { PROTOCOLS } from "../../shared/utils/const.ts";
+import { normalizeHttpIntel } from "../../parsers/normalizeJson.ts";
+import { getErrorMessage } from "../../shared/utils/utils.ts";
+import { logger } from "../../shared/systemLogger.ts";
 
 
 export const normalizedIntel: HttpIntel={
