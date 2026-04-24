@@ -1,4 +1,4 @@
-import { resolveSingleDomain, enrichWebData, classifyTarget } from "./resolver.ts";
+import { resolveSingleDomain, enrichWebData} from "./resolver.ts";
 import { getASNInfo, identifyCDN } from "./ansLookup.ts";
 import { getWhoisIntel } from "./whois.ts";
 import { withRetry } from "../../shared/retry.ts";
@@ -6,6 +6,7 @@ import type {  AnalyzedTarget } from "../../shared/types.ts";
 import { SENSORS } from "../../shared/utils/const.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { logger } from "../../shared/systemLogger.ts";
+import { classifyTarget } from "../../domain/classifyTarget.ts";
 
 export async function dnsPhaseStream(subdomain: string): Promise<Partial<AnalyzedTarget> | null> {
   try {
