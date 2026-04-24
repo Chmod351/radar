@@ -13,10 +13,10 @@ export const USER_AGENTS :string[]= [
 ];
 
 export const chromeHints = [
-  "-H", 'sec-ch-ua: "Not(A:Brand";v="99", "Google Chrome";v="142", "Chromium";v="142"',
+  "-H", "sec-ch-ua: \"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"142\", \"Chromium\";v=\"142\"",
   "-H", "sec-ch-ua-mobile: ?0",
-  "-H", 'sec-ch-ua-platform: "Windows"'
-]
+  "-H", "sec-ch-ua-platform: \"Windows\"",
+];
 
 export const noise:string[]= ["UncommonHeaders", "Cookies", "HttpOnly", "Content-Language", 
   "X-Frame-Options", "X-XSS-Protection", "Strict-Transport-Security", 

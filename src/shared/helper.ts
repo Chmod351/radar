@@ -19,7 +19,7 @@ export function normalizeHttpIntel(raw:HttpIntel):HttpIntel {
     poweredBy:raw.poweredBy|| null,
     cookies:Boolean(raw.cookies),
     error:raw.error ?? null,
-    attempts:raw.attempts
+    attempts:raw.attempts,
   }; 
 }
 export function normalizeTarget(raw: AnalyzedTarget|null): AnalyzedTarget {
