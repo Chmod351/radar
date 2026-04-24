@@ -82,7 +82,8 @@ const scanner = new WhatWebService();
  * Análisis de Headers: Seguridad y Metadatos.
  */
 const getRandomAgent = () => USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] || USER_AGENTS[0];
-const agent :string =getRandomAgent() ?? "Mozilla/5.0 ";
+const agent :string =getRandomAgent() ?? "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
+;
 
 async function analyzeHeaders(url: string):Promise<HttpIntel> {
   try {
@@ -199,7 +200,7 @@ async function headersFallback(url:string) :Promise<HttpIntel>{
 
 async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
   const attempts: BypassAttempt[] = [];
-  
+  const jitter = Math.floor(Math.random() * 500);
   // Definimos los headers de bypass que queremos testear
   const bypassPayloads = [
     { name: "Base", header: null },
@@ -211,10 +212,12 @@ async function performBypassAttempt(url: string): Promise<BypassAttempt[]> {
     {name:"X-Client-IP",header:"X-Client-IP: 127.0.0.1"},
     {name:"X-Host",header:"X-Client-IP: 127.0.0.1"},
     {name:"X-Forwarded-Host",header : "X-Formwarded-Host: localhost"},
-    {name:"X-Rewrite-URL", header:`X-Rewrite-URL:${url.endsWith("/")}?${url}:${url}+"/"}`}
+    {name: "X-Rewrite-URL", header: `X-Rewrite-URL: ${url.endsWith("/") ? url : url + "/"}` 
+}
   ];
 
   for (const payload of bypassPayloads) {
+    await Bun.sleep(jitter); // añadi latencia artificial a las requests para intentar evitar los WAF
     try {
       // Usamos -w para obtener el HTTP CODE y el SIZE_DOWNLOAD al final del output
       const args = [
