@@ -22,6 +22,7 @@ export interface OpenPort {
   port: number;
   service: string |null;
   protocol: number
+  version:string |null;
   transport:number;
 }
 export interface WhoisIntel {
