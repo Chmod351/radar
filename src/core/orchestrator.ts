@@ -1,13 +1,13 @@
 import { reconPhase } from "../phases/01-recon";
 import { dnsPhaseStream } from "../phases/02-dns";
-import { fingerprintingPhase } from "../phases/03-http";
-import { getErrorMessage, OP_DIR, PHASES, SENSORS, TARGET } from "../shared/utils.ts";
-import { logger } from "../shared/errorLogger.ts";
 import { dashboard } from "../ui/dashboard.ts";
 import type { AnalyzedTarget } from "../shared/types.ts";
-import { normalizeTarget } from "../shared/helper.ts";
-import { normalizeScanTarget } from "../shared/urlNormalizer.ts";
-import { refineInfraExposure } from "../phases/02-dns/resolver.ts";
+import { logger } from "../shared/systemLogger.ts";
+import { PHASES } from "../shared/utils/const.ts";
+import { normalizeTarget } from "../parsers/normalizeJson.ts";
+import { getErrorMessage, OP_DIR, TARGET } from "../shared/utils/utils.ts";
+import { normalizeScanTarget } from "../parsers/urlNormalizer.ts";
+import { normalizeFlow } from "../parsers/normalizerFlow.ts";
 
 export class Orchestrator {
   // por defecto 15 para mas velocidad o bajarlo para reducir carga en el procesador
@@ -31,29 +31,10 @@ export class Orchestrator {
           const analyzed = await dnsPhaseStream(sub);
           
           let normalized:AnalyzedTarget=normalizeTarget(analyzed as AnalyzedTarget);
-
-          if (normalized) {
-            if (normalized.action !== SENSORS.ACTION.DUPLICATE &&  normalized.action !==SENSORS.ACTION.SCAN_FAILED) {
-              const fullyEnriched = await fingerprintingPhase(normalized);
-              if (fullyEnriched) {
-                normalized=normalizeTarget(fullyEnriched);
-                normalized=refineInfraExposure(normalized);
-                finalResults.push(normalized);
-                logger.info(PHASES.ORCHESTRATOR, `Target completado: ${sub}`);
-              }
-            } else {
-              finalResults.push(normalized);
-              logger.info(PHASES.ORCHESTRATOR, `Omitiendo escaneo profundo para : ${sub}`);
-            }
-            if (normalized.action ===SENSORS.ACTION.DUPLICATE) {
-              const parent = finalResults.find(r => r.ip === normalized.ip && r.open_ports);
-              if (parent) {
-                normalized.open_ports = parent.open_ports;
-                normalized.webserver = parent.webserver;
-                normalized = refineInfraExposure(normalized);
-              }
-            }
-          }
+         const result = await normalizeFlow(normalized as AnalyzedTarget, finalResults, sub);
+         if (result) {
+           finalResults.push(result)
+         }
         } catch (e:unknown) {
           logger.error(PHASES.ORCHESTRATOR,getErrorMessage(e) );
         }
