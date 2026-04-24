@@ -3,11 +3,12 @@ import { dnsPhaseStream } from "../phases/02-dns";
 import { dashboard } from "../ui/dashboard.ts";
 import type { AnalyzedTarget } from "../shared/types.ts";
 import { logger } from "../shared/systemLogger.ts";
-import { PHASES } from "../shared/utils/const.ts";
+import { PHASES, SENSORS } from "../shared/utils/const.ts";
 import { normalizeTarget } from "../parsers/normalizeJson.ts";
 import { getErrorMessage, OP_DIR, TARGET } from "../shared/utils/utils.ts";
 import { normalizeScanTarget } from "../parsers/urlNormalizer.ts";
 import { normalizeFlow } from "../parsers/normalizerFlow.ts";
+import { refineInfraExposure } from "../domain/refineExposure.ts";
 
 export class Orchestrator {
   // por defecto 15 para mas velocidad o bajarlo para reducir carga en el procesador
@@ -31,10 +32,10 @@ export class Orchestrator {
           const analyzed = await dnsPhaseStream(sub);
           
           let normalized:AnalyzedTarget=normalizeTarget(analyzed as AnalyzedTarget);
-         const result = await normalizeFlow(normalized as AnalyzedTarget, finalResults, sub);
-         if (result) {
-           finalResults.push(result)
-         }
+          const result = await normalizeFlow(normalized as AnalyzedTarget, finalResults, sub);
+          if (result) {
+            finalResults.push(result);
+          }
         } catch (e:unknown) {
           logger.error(PHASES.ORCHESTRATOR,getErrorMessage(e) );
         }
@@ -48,17 +49,29 @@ export class Orchestrator {
     console.log(finalResults);
     console.log(`\n[🏁] ESCANEO FINALIZADO. Objetivos: ${finalResults.length}`);
     const path = `${OP_DIR}/${TARGET}.json`;
-
-
-
-    const normalizedFinalData = finalResults.map(target => normalizeTarget(target));
+   
+    const finalConsolidatedData = finalResults.map(target => {
+      if (target.action === SENSORS.ACTION.DUPLICATE) {
+        // Ahora sí, tenemos la CERTEZA de que el padre está en finalResults
+        const parent = finalResults.find(r => r.ip === target.ip && r.open_ports && r.open_ports.length > 0);
+        if (parent) {
+          return refineInfraExposure({
+            ...target,
+            open_ports: parent.open_ports,
+            webserver: parent.webserver,
+            http_intel: parent.http_intel,
+          });
+        }
+      }
+      return target;
+    });
 
     try {
-      await Bun.write(Bun.file(path), JSON.stringify(normalizedFinalData,null,2));
+      await Bun.write(Bun.file(path), JSON.stringify(finalConsolidatedData,null,2));
     } catch (e){
       logger.error(PHASES.ORCHESTRATOR,`ERROR AL INTENTAR ESCRIBIR LA DATA ${e}, ${path}, ${OP_DIR}`);
     }
-    return dashboard(normalizedFinalData);
+    return dashboard(finalConsolidatedData);
   }
 }
 

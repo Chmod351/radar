@@ -8,7 +8,7 @@ import { normalizeTarget } from "./normalizeJson";
 export async function normalizeFlow(
   initialData: AnalyzedTarget, 
   finalResults: AnalyzedTarget[], 
-  sub: string
+  sub: string,
 ): Promise<AnalyzedTarget | null> {
   if (!initialData) return null;
 
@@ -22,15 +22,15 @@ export async function normalizeFlow(
       logger.info(PHASES.ORCHESTRATOR, `Target completado: ${sub}`);
     }
   } 
-  else if (normalized.action === SENSORS.ACTION.DUPLICATE) {
-    const parent = finalResults.find(r => r.ip === normalized.ip && r.open_ports);
-    if (parent) {
-      normalized.open_ports = parent.open_ports;
-      normalized.webserver = parent.webserver;
-      normalized = refineInfraExposure(normalized);
-    }
-    logger.info(PHASES.ORCHESTRATOR, `Omitiendo escaneo profundo (Duplicado): ${sub}`);
-  }
+  /*   else if (normalized.action === SENSORS.ACTION.DUPLICATE) { */
+  /* // const parent = finalResults.find(r => r.ip === normalized.ip && r.open_ports); */
+  /* if (parent) { */
+  /*   normalized.open_ports = parent.open_ports; */
+  /*   normalized.webserver = parent.webserver; */
+  /*   normalized = refineInfraExposure(normalized); */
+  /* } */
+  /* logger.info(PHASES.ORCHESTRATOR, `Omitiendo escaneo profundo (Duplicado): ${sub}`); */
+  /* } */
 
   return normalized;
 }
