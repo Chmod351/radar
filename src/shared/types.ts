@@ -117,6 +117,12 @@ export interface AnalyzedTarget extends Classifier, ASNinAnalyzedTarget , WebMet
 }
 
 
+export interface ReconSource{
+name:string ; 
+cmd:string; 
+args:string[];
+}
+
 
 
 
