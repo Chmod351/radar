@@ -1,0 +1,8 @@
+import type { ReconSource } from "../../shared/types";
+
+export const getReconSources=(target:string):ReconSource[]=> [
+    { name: "Subfinder", cmd: "subfinder", args: ["-d", target, "-silent"] },
+    { name: "Assetfinder", cmd: "assetfinder", args: ["--subs-only", target] },
+  ];
+
+
