@@ -1,5 +1,5 @@
-import type { Technology } from "../shared/types";
-import { noise } from "../shared/utils/data";
+import type { Technology } from "../../domain/entities/types";
+import { noise } from "../../shared/utils/data";
 
 export const realTechFilter = (t: Technology) => {
  
