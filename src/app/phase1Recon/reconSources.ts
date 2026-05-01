@@ -1,4 +1,4 @@
-import type { ReconSource } from "../../shared/types";
+import type { ReconSource } from "../../domain/entities/types";
 
 export const getReconSources=(target:string):ReconSource[]=> [
     { name: "Subfinder", cmd: "subfinder", args: ["-d", target, "-silent"] },
