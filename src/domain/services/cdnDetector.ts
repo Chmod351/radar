@@ -1,16 +1,7 @@
 import { CDN_PROVIDERS } from "../../shared/utils/const";
+import { signatures } from "../../shared/utils/data";
 import type { DnsPhase } from "../entities/types";
  
-
-const signatures = [
-      { key: "cloudflare", id: CDN_PROVIDERS.CLOUDFLARE },
-      { key: "cloudfront", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "akamai", id: CDN_PROVIDERS.AKAMAI },
-      { key: "fastly", id: CDN_PROVIDERS.FASTLY },
-      { key: "google", id: CDN_PROVIDERS.GOOGLE_CDN },
-      { key: "x-amz-cf", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "cf-ray", id: CDN_PROVIDERS.CLOUDFLARE },    
-    ];
 
 
 export function identifyCDN(asn?:DnsPhase,

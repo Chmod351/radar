@@ -1,7 +1,5 @@
-import { emptyWhois } from "../../app/phase2Dns/dnsServices";
 import type { AnalyzedTarget, HttpIntel } from "../../domain/entities/types";
-import { normalizedIntel } from "../../phases/03-http";
-import { CDN_PROVIDERS, SENSORS } from "../../shared/utils/const";
+import { CDN_PROVIDERS, emptyWhois, normalizedIntel, SENSORS } from "../../shared/utils/const";
 import { normalizeWhois } from "./whois.mapper";
 
 

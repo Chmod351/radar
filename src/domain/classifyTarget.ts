@@ -1,15 +1,11 @@
-/**
- * CLASIFICADOR DE TARGET 
- *  para decidir qué hacer con el target.
- */
+
+import { SENSORS } from "../shared/utils/const";
+import { cloudNoise } from "../shared/utils/data";
+import type { AnalyzedTarget, DnsPhase } from "./entities/types";
 
 const globalFingerprints= new Set<string>();
 
-import { SENSORS } from "../shared/utils/const";
-import type { AnalyzedTarget, DnsPhase } from "./entities/types";
-
 export function classifyTarget(domainData: DnsPhase): Partial<AnalyzedTarget> {
-  const cloudNoise = ["cloudflare", "akamai", "vercel", "fastly", "google-cloud","amazon"];
   const asnOwner = (domainData.asn_owner || "").toLowerCase();
   const isNoise = cloudNoise.some(key => asnOwner.includes(key));
 
