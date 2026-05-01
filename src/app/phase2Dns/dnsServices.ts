@@ -3,12 +3,16 @@ import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { dnsResolver } from "../../infra/adapters/dns.adapter.ts";
 import { dnsMapper } from "../../infra/mappers/dnsx.mapper.ts";
-import type { ASNIntel, ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
+import type {WhoisIntel, ASNIntel, ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
 import { getHttpHeaders } from "../../infra/adapters/http.adapter.ts";
 import { httpParser } from "../../infra/mappers/http.mapper.ts";
 import { isValididIp } from "../../domain/services/isValidIp.ts";
 import { cymruService } from "../../infra/adapters/asnInfo.adapter.ts";
 import { asnMapper } from "../../infra/mappers/asn.mapper.ts";
+import { normalizeWhois } from "../../infra/mappers/normalizeWhois.ts";
+import { getRootDomain } from "../../infra/mappers/whois.mapper.ts";
+import { getWhois } from "../../infra/adapters/whois.adapter.ts";
+
 
 
 const emptyResults={asn:null,asn_owner:null,country:null}
@@ -65,4 +69,42 @@ export async function enrichWebData(host: string): Promise<WebMetadata> {
   }
 }
 
+/**
+ * CACHÉ GLOBAL DE WHOIS
+ */
+const whoisCache = new Map<string, WhoisIntel>();
 
+export const emptyWhois: WhoisIntel = {
+  registrar: null,
+  creationDate: null,
+  expirationDate: null,
+  nameServers: [],
+  status: [],
+  emails: null,
+  raw: "",
+}; 
+
+export async function getWhoisIntel(host: string): Promise<WhoisIntel> {
+  const root = getRootDomain(host); 
+
+  // Check de caché instantáneo
+  if (whoisCache.has(root)) {
+    return whoisCache.get(root)!;
+  }
+  try {
+    // Intentamos ejecutar whois con un timeout agresivo
+    // Si el puerto 43 está cerrado, esto fallará rápido
+  
+    const stdout = await getWhois(root)
+
+    if (!stdout || stdout.includes("No match for")) return emptyWhois;
+    const parsed = normalizeWhois(stdout);
+    whoisCache.set(root, parsed);
+    return parsed;
+
+  } catch (error: unknown) {
+    whoisCache.set(root, emptyWhois);
+    logger.error("WHO-IS", getErrorMessage(error));
+    return emptyWhois;
+  }
+}
