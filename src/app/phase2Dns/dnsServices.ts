@@ -13,8 +13,20 @@ import { normalizeWhois } from "../../infra/mappers/normalizeWhois.ts";
 import { getRootDomain } from "../../infra/mappers/whois.mapper.ts";
 import { getWhois } from "../../infra/adapters/whois.adapter.ts";
 
+/**
+ * CACHÉ GLOBAL DE WHOIS
+ */
+const whoisCache = new Map<string, WhoisIntel>();
 
-
+export const emptyWhois: WhoisIntel = {
+  registrar: null,
+  creationDate: null,
+  expirationDate: null,
+  nameServers: [],
+  status: [],
+  emails: null,
+  raw: "",
+}; 
 const emptyResults={asn:null,asn_owner:null,country:null}
 
 export async function getASNInfo(ip: string): Promise<ASNIntel> {
@@ -69,20 +81,7 @@ export async function enrichWebData(host: string): Promise<WebMetadata> {
   }
 }
 
-/**
- * CACHÉ GLOBAL DE WHOIS
- */
-const whoisCache = new Map<string, WhoisIntel>();
 
-export const emptyWhois: WhoisIntel = {
-  registrar: null,
-  creationDate: null,
-  expirationDate: null,
-  nameServers: [],
-  status: [],
-  emails: null,
-  raw: "",
-}; 
 
 export async function getWhoisIntel(host: string): Promise<WhoisIntel> {
   const root = getRootDomain(host); 
