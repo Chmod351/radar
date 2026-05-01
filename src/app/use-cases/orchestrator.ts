@@ -1,14 +1,14 @@
-import { reconPhase } from "../phases/01-recon";
-import { dnsPhaseStream } from "../phases/02-dns";
-import { dashboard } from "../ui/dashboard.ts";
-import type { AnalyzedTarget } from "../shared/types.ts";
-import { logger } from "../shared/systemLogger.ts";
-import { PHASES, SENSORS } from "../shared/utils/const.ts";
-import { normalizeTarget } from "../parsers/normalizeJson.ts";
-import { getErrorMessage, OP_DIR, TARGET } from "../shared/utils/utils.ts";
-import { normalizeScanTarget } from "../parsers/urlNormalizer.ts";
-import { normalizeFlow } from "../parsers/normalizerFlow.ts";
-import { refineInfraExposure } from "../domain/refineExposure.ts";
+import type { AnalyzedTarget } from "../../domain/entities/types";
+import { refineInfraExposure } from "../../domain/refineExposure";
+import { normalizeTarget } from "../../infra/mappers/normalizeJson";
+import { normalizeFlow } from "../../infra/mappers/normalizerFlow";
+import { normalizeScanTarget } from "../../infra/mappers/urlNormalizer";
+import { logger } from "../../shared/systemLogger";
+import { PHASES, SENSORS } from "../../shared/utils/const";
+import { getErrorMessage, OP_DIR, TARGET } from "../../shared/utils/utils";
+import { dashboard } from "../../ui/dashboard";
+import { dnsPhaseStream } from "./performDnsPhase";
+import { streamAllSubdomains } from "./subdomainFinder";
 
 export class Orchestrator {
   // por defecto 15 para mas velocidad o bajarlo para reducir carga en el procesador
@@ -22,7 +22,7 @@ export class Orchestrator {
 
 
     // Fase 1: Sigue siendo un Stream (la fuente)
-    const subdomainStream = reconPhase(target);
+    const subdomainStream = streamAllSubdomains(target);
     for await (const sub of subdomainStream) {
       if (activeWorkers.size >= this.concurrencyLimit) {
         await Promise.race(activeWorkers);

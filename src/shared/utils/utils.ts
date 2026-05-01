@@ -1,5 +1,5 @@
+import type { AnalyzedTarget } from "../../domain/entities/types";
 import { logger } from "../systemLogger";
-import type { AnalyzedTarget } from "../types";
 import { noise } from "./data";
 
 

@@ -1,7 +1,7 @@
 import { runSubdomainStream } from "../../infra/adapters/subdomain.adapter";
 import { logger } from "../../shared/systemLogger";
 import { PHASES } from "../../shared/utils/const";
-import { getReconSources } from "./reconSources";
+import { getReconSources } from "../phase1Recon/reconSources";
  
 /**
  * FASE 1: RECON (Paralelismo Real y Deduplicación en Vuelo)
