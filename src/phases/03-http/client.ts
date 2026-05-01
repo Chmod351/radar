@@ -1,12 +1,12 @@
 import { execa } from "execa";
 import { unlink, readFile } from "node:fs/promises";
-import type {  BypassAttempt, HttpIntel, Technology, WhatWebPluginDetails } from "../../shared/types.ts";
 import { normalizedIntel } from "./";
 import { existsSync } from "node:fs";
 import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { USER_AGENTS } from "../../shared/utils/data.ts";
 import { PROTOCOLS } from "../../shared/utils/const.ts";
+import type { BypassAttempt, HttpIntel, Technology, WhatWebPluginDetails } from "../../domain/entities/types.ts";
 
 type WhatWebRawResponse = Record<string, WhatWebPluginDetails>;
 

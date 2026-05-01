@@ -10,7 +10,7 @@ import { getReconSources } from "../phase1Recon/reconSources";
 export async function* streamAllSubdomains(target: string): AsyncIterable<string> {
   const seen = new Set<string>(); // Memoria para evitar duplicados
   logger.info(PHASES.RECON, `[*] Radar activado: Escaneo paralelo para ${target}`);
- const sources=getReconSources(target)
+  const sources=getReconSources(target);
   // Cola intermedia para los hallazgos
   const outputQueue: string[] = [];
   let activeSources = sources.length;

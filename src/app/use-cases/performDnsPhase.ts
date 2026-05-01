@@ -8,7 +8,7 @@ import { enrichWebData, getASNInfo, getWhoisIntel, resolveSingleDomain } from ".
 
 export async function dnsPhaseStream(subdomain: string): Promise<Partial<AnalyzedTarget> | null> {
   try {
-    const resolved = await resolveSingleDomain(subdomain)
+    const resolved = await resolveSingleDomain(subdomain);
     if (!resolved || resolved.ip === "0.0.0.0") return null;
 
     const [asnInfo, webInfo] = await Promise.all([
@@ -26,7 +26,7 @@ export async function dnsPhaseStream(subdomain: string): Promise<Partial<Analyze
     
     const analyzed = classifyTarget(baseData);
     if (analyzed.action === SENSORS.ACTION.READY) {
-      analyzed.whois = await getWhoisIntel(subdomain)
+      analyzed.whois = await getWhoisIntel(subdomain);
     }
 
     return analyzed;

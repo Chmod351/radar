@@ -7,28 +7,28 @@ import { getErrorMessage } from "../../shared/utils/utils";
 async function DNSRawResolver(query:string) {
   try {
     const records = await resolveTxt(query); 
-    return records
+    return records;
   } catch (e) {
     /* handle error */
-    logger.error("ASN INFO", getErrorMessage(e))
-    throw e
+    logger.error("ASN INFO", getErrorMessage(e));
+    throw e;
   }
   
 } 
 
 
 export async function cymruService(ip:string) {
-    const revIp = ip.split(".").reverse().join(".");
-    const query = `${revIp}.origin.asn.cymru.com`;
-try {
-    const records =  await DNSRawResolver(query)
+  const revIp = ip.split(".").reverse().join(".");
+  const query = `${revIp}.origin.asn.cymru.com`;
+  try {
+    const records =  await DNSRawResolver(query);
 
-   const firstEntry =  records?.[0]?.[0];
+    const firstEntry =  records?.[0]?.[0];
 
-   return firstEntry
+    return firstEntry;
 
-} catch (e) {
+  } catch (e) {
   /* handle error */
-  return null
-}
+    return null;
   }
+}

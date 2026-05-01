@@ -1,17 +1,17 @@
 import { CDN_PROVIDERS } from "./const";
 
-  export const cloudNoise = ["cloudflare", "akamai", "vercel", "fastly", "google-cloud","amazon"];
+export const cloudNoise = ["cloudflare", "akamai", "vercel", "fastly", "google-cloud","amazon"];
 
 
-  export const signatures = [
-      { key: "cloudflare", id: CDN_PROVIDERS.CLOUDFLARE },
-      { key: "cloudfront", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "akamai", id: CDN_PROVIDERS.AKAMAI },
-      { key: "fastly", id: CDN_PROVIDERS.FASTLY },
-      { key: "google", id: CDN_PROVIDERS.GOOGLE_CDN },
-      { key: "x-amz-cf", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "cf-ray", id: CDN_PROVIDERS.CLOUDFLARE },    
-    ];
+export const signatures = [
+  { key: "cloudflare", id: CDN_PROVIDERS.CLOUDFLARE },
+  { key: "cloudfront", id: CDN_PROVIDERS.CLOUDFRONT },
+  { key: "akamai", id: CDN_PROVIDERS.AKAMAI },
+  { key: "fastly", id: CDN_PROVIDERS.FASTLY },
+  { key: "google", id: CDN_PROVIDERS.GOOGLE_CDN },
+  { key: "x-amz-cf", id: CDN_PROVIDERS.CLOUDFRONT },
+  { key: "cf-ray", id: CDN_PROVIDERS.CLOUDFLARE },    
+];
 
 // bun ya maneja user agents, toca migrar esto al binario de bun
 export const USER_AGENTS :string[]= [

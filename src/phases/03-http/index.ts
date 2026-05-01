@@ -8,26 +8,6 @@ import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { logger } from "../../shared/systemLogger.ts";
 
 
-export const normalizedIntel: HttpIntel={
-  protocol: PROTOCOLS.APP.UNKNOWN,
-  status:0,
-  security:{
-    hsts:false,
-    csp:false,
-    xfo:false,
-    nosniff:false,
-  },server:null,
-  poweredBy:null,
-  cookies:false,
-  error:null,
-  attempts:[{
-    method:"none",
-    header:null,
-    status:0,
-    size:0,
-    timestamp:"",
-  }],
-};
 export async function fingerprintingPhase(target: AnalyzedTarget): Promise<AnalyzedTarget> {
   const host = target.host;
 

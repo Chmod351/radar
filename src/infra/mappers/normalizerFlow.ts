@@ -22,5 +22,5 @@ export async function normalizeFlow(
       logger.info(PHASES.ORCHESTRATOR, `Target completado: ${sub}`);
     }
   } 
-   return normalized;
+  return normalized;
 }

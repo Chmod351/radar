@@ -5,7 +5,7 @@ import { getErrorMessage } from "../../shared/utils/utils";
 export async function dnsResolver (domain:string):Promise<string> {
 
   try {
-        const { stdout } =await execa("dnsx", [
+    const { stdout } =await execa("dnsx", [
       "-json",
       "-silent",
       "-nc",
@@ -14,11 +14,11 @@ export async function dnsResolver (domain:string):Promise<string> {
     { input:domain,
       timeout: 10000 });
 
-return stdout
+    return stdout;
     
   } catch (e:unknown) {
     /* handle error */
-    logger.error("DNSX", getErrorMessage(e))
-    throw e 
+    logger.error("DNSX", getErrorMessage(e));
+    throw e; 
   }
 }

@@ -17,7 +17,7 @@ export function identifyCDN(asn?:DnsPhase,
       return { cdn: CDN_PROVIDERS.AWS_S3 }; 
     }
    
-      // Buscamos la firma en el header 'server'
+    // Buscamos la firma en el header 'server'
     for (const sig of signatures) {
       if (sHeader.includes(sig.key) || hRaw.includes(sig.key)) {
         cdn = sig.id;

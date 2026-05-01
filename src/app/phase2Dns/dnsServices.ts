@@ -3,7 +3,7 @@ import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { dnsResolver } from "../../infra/adapters/dns.adapter.ts";
 import { dnsMapper } from "../../infra/mappers/dnsx.mapper.ts";
-import type {WhoisIntel, ASNIntel, ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
+import type { WhoisIntel, ASNIntel, ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
 import { getHttpHeaders } from "../../infra/adapters/http.adapter.ts";
 import { httpParser } from "../../infra/mappers/http.mapper.ts";
 import { isValididIp } from "../../domain/services/isValidIp.ts";
@@ -17,17 +17,17 @@ import { getWhois } from "../../infra/adapters/whois.adapter.ts";
  */
 const whoisCache = new Map<string, WhoisIntel>();
 
-const emptyResults={asn:null,asn_owner:null,country:null}
+const emptyResults={ asn:null,asn_owner:null,country:null };
 
 export async function getASNInfo(ip: string): Promise<ASNIntel> {
   if (!isValididIp(ip)) {
-    return emptyResults
+    return emptyResults;
   }    
-    const firstEntry= await cymruService(ip)
-    if (!firstEntry) {
-     return emptyResults
-    }
-  return asnMapper(firstEntry)
+  const firstEntry= await cymruService(ip);
+  if (!firstEntry) {
+    return emptyResults;
+  }
+  return asnMapper(firstEntry);
 }
 
 
@@ -38,7 +38,7 @@ export async function resolveSingleDomain(domain: string): Promise<ResolvedDomai
     const stdout = await dnsResolver(domain);
     return dnsMapper(stdout);
     
-     } catch (e:unknown) {
+  } catch (e:unknown) {
     logger.error("RESOLVER-SINGLE-DOMAIN", getErrorMessage(e));
     // No logueamos error aquí para no ensuciar si el dominio simplemente no existe
     return null;
@@ -51,23 +51,23 @@ export async function resolveSingleDomain(domain: string): Promise<ResolvedDomai
  */
 export async function enrichWebData(host: string): Promise<WebMetadata> {
   const emptyRes= {
-      url: `http://${host}`,
-      status_code: SENSORS.INFRA_STATUS.ERROR,
-      title: null,
-      webserver: null,
-      cdn: null,
-    }
+    url: `http://${host}`,
+    status_code: SENSORS.INFRA_STATUS.ERROR,
+    title: null,
+    webserver: null,
+    cdn: null,
+  };
   try {
  
-    const headers= await getHttpHeaders(host)
-    const pardedHeaders= httpParser(headers, host)
+    const headers= await getHttpHeaders(host);
+    const pardedHeaders= httpParser(headers, host);
 
     return pardedHeaders;
        
   } catch (e) {
     // Fallback: Si falla el escaneo profundo, devolvemos lo básico
     logger.error("ENRICH", `${host} fallo con error: ${e}, mandando fallback`);
-    return emptyRes
+    return emptyRes;
   }
 }
 
@@ -84,7 +84,7 @@ export async function getWhoisIntel(host: string): Promise<WhoisIntel> {
     // Intentamos ejecutar whois con un timeout agresivo
     // Si el puerto 43 está cerrado, esto fallará rápido
   
-    const stdout = await getWhois(root)
+    const stdout = await getWhois(root);
 
     if (!stdout || stdout.includes("No match for")) return emptyWhois;
     const parsed = normalizeWhois(stdout);
