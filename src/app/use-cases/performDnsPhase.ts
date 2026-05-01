@@ -1,21 +1,22 @@
-import { resolveSingleDomain, enrichWebData } from "./resolver.ts";
-import { getASNInfo, identifyCDN } from "./ansLookup.ts";
-import { getWhoisIntel } from "./whois.ts";
 import { withRetry } from "../../shared/retry.ts";
-import type {  AnalyzedTarget } from "../../shared/types.ts";
 import { SENSORS } from "../../shared/utils/const.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { logger } from "../../shared/systemLogger.ts";
 import { classifyTarget } from "../../domain/classifyTarget.ts";
+import { enrichWebData, resolveSingleDomain } from "../../phases/02-dns/resolver.ts";
+import { getASNInfo } from "../../phases/02-dns/ansLookup.ts";
+import { identifyCDN } from "../../domain/services/cdnDetector.ts";
+import type { AnalyzedTarget } from "../../domain/entities/types.ts";
+import { getWhoisIntel } from "../../phases/02-dns/whois.ts";
 
 export async function dnsPhaseStream(subdomain: string): Promise<Partial<AnalyzedTarget> | null> {
   try {
-    const resolved = await withRetry(`DNS:${subdomain}`, () => resolveSingleDomain(subdomain));
+    const resolved = await resolveSingleDomain(subdomain)
     if (!resolved || resolved.ip === "0.0.0.0") return null;
 
     const [asnInfo, webInfo] = await Promise.all([
-      withRetry(`ASN:${resolved.ip}`, () => getASNInfo(resolved.ip)),
-      withRetry(`WEB:${subdomain}`, () => enrichWebData(subdomain)),
+      getASNInfo(resolved.ip),
+      enrichWebData(subdomain),
     ]);
 
     const baseData= {
@@ -25,6 +26,7 @@ export async function dnsPhaseStream(subdomain: string): Promise<Partial<Analyze
     };
     const { cdn }= identifyCDN(baseData);
     baseData.cdn=cdn;
+    
     const analyzed = classifyTarget(baseData);
     if (analyzed.action === SENSORS.ACTION.READY) {
       analyzed.whois = await withRetry(`Whois:${subdomain}`, () => getWhoisIntel(subdomain));
