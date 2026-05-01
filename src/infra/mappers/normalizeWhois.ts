@@ -1,4 +1,4 @@
-import type { WhoisIntel } from "../shared/types";
+import type { WhoisIntel } from "../../domain/entities/types";
 import { parseWhoisAgnostic } from "./parserWhois";
 
 export function normalizeWhois(rawText: string): WhoisIntel {

@@ -1,5 +1,5 @@
-import type { OpenPort } from "../shared/types";
-import { PROTOCOLS } from "../shared/utils/const";
+import type { OpenPort } from "../../domain/entities/types";
+import { PROTOCOLS } from "../../shared/utils/const";
 
 
 
