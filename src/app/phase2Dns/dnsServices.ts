@@ -1,4 +1,4 @@
-import { SENSORS } from "../../shared/utils/const.ts";
+import { emptyWhois, SENSORS } from "../../shared/utils/const.ts";
 import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { dnsResolver } from "../../infra/adapters/dns.adapter.ts";
@@ -9,8 +9,7 @@ import { httpParser } from "../../infra/mappers/http.mapper.ts";
 import { isValididIp } from "../../domain/services/isValidIp.ts";
 import { cymruService } from "../../infra/adapters/asnInfo.adapter.ts";
 import { asnMapper } from "../../infra/mappers/asn.mapper.ts";
-import { normalizeWhois } from "../../infra/mappers/normalizeWhois.ts";
-import { getRootDomain } from "../../infra/mappers/whois.mapper.ts";
+import { getRootDomain, normalizeWhois } from "../../infra/mappers/whois.mapper.ts";
 import { getWhois } from "../../infra/adapters/whois.adapter.ts";
 
 /**
@@ -18,15 +17,6 @@ import { getWhois } from "../../infra/adapters/whois.adapter.ts";
  */
 const whoisCache = new Map<string, WhoisIntel>();
 
-export const emptyWhois: WhoisIntel = {
-  registrar: null,
-  creationDate: null,
-  expirationDate: null,
-  nameServers: [],
-  status: [],
-  emails: null,
-  raw: "",
-}; 
 const emptyResults={asn:null,asn_owner:null,country:null}
 
 export async function getASNInfo(ip: string): Promise<ASNIntel> {
