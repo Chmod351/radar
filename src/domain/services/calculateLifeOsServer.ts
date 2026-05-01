@@ -1,4 +1,4 @@
-import type { AnalyzedTarget } from "../shared/types";
+import type { AnalyzedTarget } from "../entities/types";
 
 export function scoreLifeOfServer(item:AnalyzedTarget):number {
   let score = 0; 

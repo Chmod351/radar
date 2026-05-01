@@ -1,4 +1,4 @@
-import type { AnalyzedTarget, HttpIntel, Technology } from "../shared/types";
+import type { AnalyzedTarget, HttpIntel, Technology } from "../entities/types";
 
 export function calculateStatus(item:AnalyzedTarget){
   if (item.ip==="0.0.0.0"){

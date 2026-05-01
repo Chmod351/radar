@@ -5,8 +5,8 @@
 
 const globalFingerprints= new Set<string>();
 
-import type { AnalyzedTarget, DnsPhase } from "../shared/types";
 import { SENSORS } from "../shared/utils/const";
+import type { AnalyzedTarget, DnsPhase } from "./entities/types";
 
 export function classifyTarget(domainData: DnsPhase): Partial<AnalyzedTarget> {
   const cloudNoise = ["cloudflare", "akamai", "vercel", "fastly", "google-cloud","amazon"];

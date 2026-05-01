@@ -1,4 +1,4 @@
-import type { AnalyzedTarget } from "../shared/types";
+import type { AnalyzedTarget } from "../entities/types";
 import { scoreExposure } from "./calculateExposure";
 import { scoreImpact } from "./calculateImpact";
 import { scoreLifeOfServer } from "./calculateLifeOsServer";

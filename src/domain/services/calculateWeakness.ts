@@ -1,5 +1,5 @@
-import type { AnalyzedTarget, Fingerprint } from "../shared/types";
-import { CDN_PROVIDERS } from "../shared/utils/const";
+import { CDN_PROVIDERS } from "../../shared/utils/const";
+import type { AnalyzedTarget, Fingerprint } from "../entities/types";
 
 
 

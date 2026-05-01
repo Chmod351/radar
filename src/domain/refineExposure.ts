@@ -1,5 +1,5 @@
-import type { AnalyzedTarget } from "../shared/types";
 import { SENSORS } from "../shared/utils/const";
+import type { AnalyzedTarget } from "./entities/types";
 
 export function refineInfraExposure(target: AnalyzedTarget): AnalyzedTarget {
   const serverHeader = (target.webserver || "").toLowerCase();

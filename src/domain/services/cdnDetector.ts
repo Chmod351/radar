@@ -1,5 +1,17 @@
-import type { DnsPhase } from "../../shared/types";
 import { CDN_PROVIDERS } from "../../shared/utils/const";
+import type { DnsPhase } from "../entities/types";
+ 
+
+const signatures = [
+      { key: "cloudflare", id: CDN_PROVIDERS.CLOUDFLARE },
+      { key: "cloudfront", id: CDN_PROVIDERS.CLOUDFRONT },
+      { key: "akamai", id: CDN_PROVIDERS.AKAMAI },
+      { key: "fastly", id: CDN_PROVIDERS.FASTLY },
+      { key: "google", id: CDN_PROVIDERS.GOOGLE_CDN },
+      { key: "x-amz-cf", id: CDN_PROVIDERS.CLOUDFRONT },
+      { key: "cf-ray", id: CDN_PROVIDERS.CLOUDFLARE },    
+    ];
+
 
 export function identifyCDN(asn?:DnsPhase,
   serverHeader?:string,
@@ -13,15 +25,7 @@ export function identifyCDN(asn?:DnsPhase,
     if (sHeader.includes("amazons3")) {
       return { cdn: CDN_PROVIDERS.AWS_S3 }; 
     }
-    const signatures = [
-      { key: "cloudflare", id: CDN_PROVIDERS.CLOUDFLARE },
-      { key: "cloudfront", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "akamai", id: CDN_PROVIDERS.AKAMAI },
-      { key: "fastly", id: CDN_PROVIDERS.FASTLY },
-      { key: "google", id: CDN_PROVIDERS.GOOGLE_CDN },
-      { key: "x-amz-cf", id: CDN_PROVIDERS.CLOUDFRONT },
-      { key: "cf-ray", id: CDN_PROVIDERS.CLOUDFLARE },    
-    ];
+   
       // Buscamos la firma en el header 'server'
     for (const sig of signatures) {
       if (sHeader.includes(sig.key) || hRaw.includes(sig.key)) {
