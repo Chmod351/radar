@@ -1,13 +1,10 @@
-import { withRetry } from "../../shared/retry.ts";
 import { SENSORS } from "../../shared/utils/const.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { logger } from "../../shared/systemLogger.ts";
 import { classifyTarget } from "../../domain/classifyTarget.ts";
-import { enrichWebData, resolveSingleDomain } from "../../phases/02-dns/resolver.ts";
-import { getASNInfo } from "../../phases/02-dns/ansLookup.ts";
 import { identifyCDN } from "../../domain/services/cdnDetector.ts";
 import type { AnalyzedTarget } from "../../domain/entities/types.ts";
-import { getWhoisIntel } from "../../phases/02-dns/whois.ts";
+import { enrichWebData, getASNInfo, getWhoisIntel, resolveSingleDomain } from "../phase2Dns/dnsServices.ts";
 
 export async function dnsPhaseStream(subdomain: string): Promise<Partial<AnalyzedTarget> | null> {
   try {
@@ -29,7 +26,7 @@ export async function dnsPhaseStream(subdomain: string): Promise<Partial<Analyze
     
     const analyzed = classifyTarget(baseData);
     if (analyzed.action === SENSORS.ACTION.READY) {
-      analyzed.whois = await withRetry(`Whois:${subdomain}`, () => getWhoisIntel(subdomain));
+      analyzed.whois = await getWhoisIntel(subdomain)
     }
 
     return analyzed;
