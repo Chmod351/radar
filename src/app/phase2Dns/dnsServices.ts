@@ -3,11 +3,27 @@ import { logger } from "../../shared/systemLogger.ts";
 import { getErrorMessage } from "../../shared/utils/utils.ts";
 import { dnsResolver } from "../../infra/adapters/dns.adapter.ts";
 import { dnsMapper } from "../../infra/mappers/dnsx.mapper.ts";
-import type { ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
-import { execa } from "execa";
-import { identifyCDN } from "../../domain/services/cdnDetector.ts";
+import type { ASNIntel, ResolvedDomain, WebMetadata } from "../../domain/entities/types.ts";
 import { getHttpHeaders } from "../../infra/adapters/http.adapter.ts";
 import { httpParser } from "../../infra/mappers/http.mapper.ts";
+import { isValididIp } from "../../domain/services/isValidIp.ts";
+import { cymruService } from "../../infra/adapters/asnInfo.adapter.ts";
+import { asnMapper } from "../../infra/mappers/asn.mapper.ts";
+
+
+const emptyResults={asn:null,asn_owner:null,country:null}
+
+export async function getASNInfo(ip: string): Promise<ASNIntel> {
+  if (!isValididIp(ip)) {
+    return emptyResults
+  }    
+    const firstEntry= await cymruService(ip)
+    if (!firstEntry) {
+     return emptyResults
+    }
+  return asnMapper(firstEntry)
+}
+
 
 
 export async function resolveSingleDomain(domain: string): Promise<ResolvedDomain | null> {
