@@ -1,8 +1,8 @@
-import type { AnalyzedTarget } from "../shared/types";
-import { calculatePriority } from "../domain/calculatePriority.ts";
-import { calculateStatus, getServerInfo } from "../domain/calculateStatus.ts";
+import type { AnalyzedTarget } from "../domain/entities/types.ts";
+import { calculatePriority } from "../domain/services/calculatePriority.ts";
+import { calculateStatus, getServerInfo } from "../domain/services/calculateStatus.ts";
+import { cdnTranslatorForDashboard, infraTranslatorForDashboard, realTechFilter } from "../infra/mappers/dashboardParsers.ts";
 import { SENSORS } from "../shared/utils/const.ts";
-import { cdnTranslatorForDashboard, infraTranslatorForDashboard, realTechFilter } from "../parsers/dashboardParsers.ts";
 
 /**
  * Renderiza la tabla final en la terminal.
