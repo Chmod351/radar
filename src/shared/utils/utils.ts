@@ -1,6 +1,6 @@
 import type { AnalyzedTarget } from "../../domain/entities/types";
 import { logger } from "../systemLogger";
-import { noise } from "./data";
+import { noise, USER_AGENTS } from "./data";
 
 
 // ----------------
@@ -32,3 +32,4 @@ export function getErrorMessage(error: unknown): string {
 
 
 
+export const getRandomAgent = () => USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] || USER_AGENTS[0];
